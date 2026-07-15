@@ -6,27 +6,26 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { RegisterUserDto } from './dto/register-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('register')
-  register(
-    @Body('email') email: string,
-    @Body('password') password: string,
-    @Body('firstName') firstName: string,
-    @Body('lastName') lastName: string,
-  ) {
-    return this.usersService.register(email, firstName, lastName, password);
+  register(@Body() registerUserDto: RegisterUserDto) {
+    return this.usersService.register(registerUserDto);
   }
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+
+  @Post('login')
+  @HttpCode(200)
+  login(@Body() loginUserDto: LoginUserDto) {
+    return this.usersService.login(loginUserDto);
   }
 
   @Get()

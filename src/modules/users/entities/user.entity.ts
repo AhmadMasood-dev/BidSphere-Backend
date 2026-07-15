@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -14,10 +20,10 @@ export class User {
   @Column({ default: true })
   isActive!: boolean;
 
-  @Column()
+  @Column({ unique: true, nullable: false })
   email!: string;
 
-  @Column()
+  @Column({ nullable: false })
   password!: string;
 
   @Column({ default: 'user' })
@@ -38,4 +44,3 @@ export class User {
   @UpdateDateColumn()
   updatedAt!: Date;
 }
-
