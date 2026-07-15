@@ -22,7 +22,7 @@ import { AuthModule } from './modules/auth/auth.module';
         database: configService.get('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity.{ts,js}'],
         synchronize: configService.get<boolean>('DB_SYNC'),
-        logging: true,
+        logging: false,
       }),
       inject: [ConfigService],
     }),

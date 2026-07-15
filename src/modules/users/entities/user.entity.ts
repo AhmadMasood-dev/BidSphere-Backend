@@ -17,7 +17,7 @@ export class User {
   @Column()
   lastName!: string;
 
-  @Column({ default: true })
+  @Column({ default: false })
   isActive!: boolean;
 
   @Column({ unique: true, nullable: false })
@@ -26,7 +26,7 @@ export class User {
   @Column({ nullable: false })
   password!: string;
 
-  @Column({ default: 'user' })
+  @Column({ default: 'ADMIN' })
   role!: string;
 
   @Column({ type: 'int', default: 0 })

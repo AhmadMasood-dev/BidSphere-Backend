@@ -37,7 +37,9 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<User> {
+  async login(
+    loginUserDto: LoginUserDto,
+  ): Promise<{ user: User; accessToken: string }> {
     const user = await this.userRepository.findUserByEmail(loginUserDto.email);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -50,7 +52,11 @@ export class UsersService {
       throw new UnauthorizedException('Invalid password');
     }
     const { password, ...result } = user;
-    return result as User;
+    const accessToken = this.authService.generateJwt(user);
+    return {
+      user: result as User,
+      accessToken,
+    };
   }
 
   findAll(): Promise<User[]> {
