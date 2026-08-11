@@ -21,7 +21,10 @@ export class UsersRepository extends Repository<User> {
     return count > 0;
   }
 
-  async validatePassword(password: string, passwordHash: string): Promise<boolean> {
+  async validatePassword(
+    password: string,
+    passwordHash: string,
+  ): Promise<boolean> {
     return this.authService.comparePasswords(password, passwordHash);
   }
 }

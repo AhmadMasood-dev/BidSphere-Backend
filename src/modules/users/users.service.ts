@@ -10,6 +10,7 @@ import { UsersRepository } from './repo/users.repository';
 import { LoginUserDto } from './dto/login-user.dto';
 import { AuthService } from '../auth/auth.service';
 import { RegisterUserDto } from './dto/register-user.dto';
+import { Role } from '../../common/enums/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -19,6 +20,26 @@ export class UsersService {
   ) {}
 
   async register(registerUserDto: RegisterUserDto): Promise<User> {
+    const { email, password, firstName, lastName, role } = registerUserDto;
+    const exists = await this.userRepository.mailExists(email);
+
+    if (exists) {
+      throw new ConflictException('User already exists');
+    }
+
+    const hashedPassword = await this.authService.hashPassword(password);
+
+    const user = new User();
+    user.email = email;
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.password = hashedPassword;
+    user.role = role || Role.BUYER;
+
+    return this.userRepository.save(user);
+  }
+
+  async createAdmin(registerUserDto: RegisterUserDto): Promise<User> {
     const { email, password, firstName, lastName } = registerUserDto;
     const exists = await this.userRepository.mailExists(email);
 
@@ -33,6 +54,7 @@ export class UsersService {
     user.firstName = firstName;
     user.lastName = lastName;
     user.password = hashedPassword;
+    user.role = Role.ADMIN;
 
     return this.userRepository.save(user);
   }
