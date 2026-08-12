@@ -13,7 +13,10 @@ export class UsersRepository extends Repository<User> {
   }
 
   findUserByEmail(email: string): Promise<User | null> {
-    return this.findOne({ where: { email } });
+    return this.createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.email = :email', { email })
+      .getOne();
   }
 
   async mailExists(email: string): Promise<boolean> {

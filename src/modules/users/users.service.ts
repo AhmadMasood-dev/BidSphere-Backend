@@ -36,7 +36,9 @@ export class UsersService {
     user.password = hashedPassword;
     user.role = role || Role.BUYER;
 
-    return this.userRepository.save(user);
+    const saved = await this.userRepository.save(user);
+    delete (saved as any).password;
+    return saved;
   }
 
   async createAdmin(registerUserDto: RegisterUserDto): Promise<User> {
@@ -56,7 +58,9 @@ export class UsersService {
     user.password = hashedPassword;
     user.role = Role.ADMIN;
 
-    return this.userRepository.save(user);
+    const saved = await this.userRepository.save(user);
+    delete (saved as any).password;
+    return saved;
   }
 
   async login(
@@ -64,14 +68,14 @@ export class UsersService {
   ): Promise<{ user: User; accessToken: string }> {
     const user = await this.userRepository.findUserByEmail(loginUserDto.email);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new UnauthorizedException('Invalid email or password');
     }
     const isPasswordValid = await this.userRepository.validatePassword(
       loginUserDto.password,
       user.password,
     );
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid password');
+      throw new UnauthorizedException('Invalid email or password');
     }
     const { password, ...result } = user;
     const accessToken = this.authService.generateJwt(user);
@@ -116,7 +120,9 @@ export class UsersService {
         user.email = updateUserDto.email;
       }
     }
-    return this.userRepository.save(user);
+    const saved = await this.userRepository.save(user);
+    delete (saved as any).password;
+    return saved;
   }
 
   remove(id: string) {
